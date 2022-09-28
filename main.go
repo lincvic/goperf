@@ -38,7 +38,7 @@ func main() {
 	configPtr := configLoader()
 	fmt.Println("goperf MultiCore CPU Test starting ...")
 	cpuCores := runtime.NumCPU()
-	fmt.Printf("CPU Cores %d, Message Size %d, %d workers inside each goroutine, Channle Buffer Size %d\n",
+	fmt.Printf("CPU Cores %d, Message Size %d, %d workers inside each goroutine, Channel Buffer Size %d\n",
 		cpuCores, configPtr.MessageSize, configPtr.GoroutineWorkSize, configPtr.ChannelBufferSize)
 	runtime.GOMAXPROCS(cpuCores)
 
