@@ -10,7 +10,6 @@ import (
 
 func configLoader() *GoperfConfig {
 	config := new(GoperfConfig)
-	flag.IntVar(&config.GoroutineSize, "goroutines", 10, "The size (number) of goroutines, default is 10")
 	flag.IntVar(&config.GoroutineWorkSize, "workers", 10, "The size (number) of workers for a single goroutine, default is 10")
 	flag.IntVar(&config.ChannelBufferSize, "buffer", 1, "The size of Channel buffer, default is 1")
 	flag.IntVar(&config.MessageSize, "msg", 100, "The size of message send to Channel, default is 100")
@@ -39,26 +38,31 @@ func main() {
 	configPtr := configLoader()
 	fmt.Println("goperf MultiCore CPU Test starting ...")
 	cpuCores := runtime.NumCPU()
-	fmt.Printf("CPU Cores %d, Goroutine Size %d, %d workers inside each goroutine, Channle Buffer Size %d\n",
-		cpuCores, configPtr.GoroutineSize, configPtr.GoroutineWorkSize, configPtr.ChannelBufferSize)
+	fmt.Printf("CPU Cores %d, Message Size %d, %d workers inside each goroutine, Channle Buffer Size %d\n",
+		cpuCores, configPtr.MessageSize, configPtr.GoroutineWorkSize, configPtr.ChannelBufferSize)
 	runtime.GOMAXPROCS(cpuCores)
 
 	channel := make(chan string, configPtr.ChannelBufferSize)
+	timeLocker := make(chan int, configPtr.MessageSize)
 	startTime := time.Now()
-	for i := 0; i < configPtr.GoroutineSize; i++ {
+	for i := 0; i < configPtr.MessageSize; i++ {
 		go func(c chan string) {
 			<-c
-			for {
-				for i := 0; i < configPtr.GoroutineWorkSize; i++ {
-					fact(configPtr.FactNumber)
-				}
+			//fmt.Println("Calculating FACT")
+			for i := 0; i < configPtr.GoroutineWorkSize; i++ {
+				fact(configPtr.FactNumber)
 			}
+			timeLocker <- 1
 		}(channel)
 	}
 
 	sendMessage(channel, configPtr.MessageSize)
 
+	for i := 0; i < configPtr.MessageSize; i++ {
+		<-timeLocker
+	}
+
 	timeInMS := time.Since(startTime).Milliseconds()
 	fmt.Printf("Total time is %d ms\n", timeInMS)
-	fmt.Printf("%d CPU cores process %f message/ms with %d goroutines \n", cpuCores, float64(configPtr.MessageSize)/float64(timeInMS), configPtr.GoroutineSize)
+	fmt.Printf("%d CPU cores process %f message/ms with %d goroutines \n", cpuCores, float64(configPtr.MessageSize)/float64(timeInMS), configPtr.MessageSize)
 }
