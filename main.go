@@ -60,5 +60,5 @@ func main() {
 
 	timeInMS := time.Since(startTime).Milliseconds()
 	fmt.Printf("Total time is %d ms\n", timeInMS)
-	fmt.Printf("%d CPU cores process %f message/ms with %d goroutines", cpuCores, float64(configPtr.MessageSize)/float64(timeInMS), configPtr.GoroutineSize)
+	fmt.Printf("%d CPU cores process %f message/ms with %d goroutines \n", cpuCores, float64(configPtr.MessageSize)/float64(timeInMS), configPtr.GoroutineSize)
 }
