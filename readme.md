@@ -3,6 +3,8 @@ A go-based cross-platform CPU multicore performance evaluation tool
 ## Installation
 ``git clone https://github.com/lincvic/goperf``
 
+``go install``
+
 ``go build``
 
 ## How to use
