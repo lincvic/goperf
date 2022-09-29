@@ -5,4 +5,6 @@ type GoperfConfig struct {
 	GoroutineWorkSize int
 	MessageSize       int
 	FactNumber        int
+	RunningTime       int
+	ResultPath        string
 }
