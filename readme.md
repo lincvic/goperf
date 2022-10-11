@@ -24,7 +24,7 @@ On Azure ARM VM Standard D4ps v5 (4 vcpus, 16 GiB memory)
 
 ``go run . -workers 100 -buffer 1 -msg 100 -fact 1234567 -time 5``
 
-Output is :
+Output :
 
 > goperf MultiCore CPU Test starting ...
 >
